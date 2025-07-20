@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 300px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #666;
+            margin: 4px 0 0 0;
+        }
+
+        .status-section {
+            margin-bottom: 16px;
+        }
+
+        .status-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .page-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .page-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .page-item.ready {
+            background-color: #e8f5e8;
+            color: #2d5a2d;
+        }
+
+        .page-item.scraped {
+            background-color: #ffe8e8;
+            color: #5a2d2d;
+        }
+
+        .page-item.waiting {
+            background-color: #f5f5f5;
+            color: #666;
+        }
+
+        .page-item.complete {
+            background-color: #e8f0ff;
+            color: #2d3d5a;
+        }
+
+        .page-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .page-status.ready {
+            background-color: #22c55e;
+        }
+
+        .page-status.scraped {
+            background-color: #ef4444;
+        }
+
+        .page-status.waiting {
+            background-color: #9ca3af;
+        }
+
+        .page-status.complete {
+            background-color: #3b82f6;
+        }
+
+        .instructions {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 16px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button-reset {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .button-reset:hover {
+            background-color: #dc2626;
+        }
+
+        .button:disabled {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .export-status {
+            text-align: center;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .export-status.success {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+    </style>
+</head>
+<body>
+
+<span>Does this work?</span>
+
+<!--<div class="header">-->
+<!--    <h1 class="title">Yahoo Finance Scraper</h1>-->
+<!--    <p class="subtitle">Collect stock data across multiple pages</p>-->
+<!--</div>-->
+
+<!--<div class="instructions">-->
+<!--    Click the extension icon when on Yahoo Finance pages to scrape data. Complete all three page types to export to clipboard.-->
+<!--</div>-->
+
+<!--<div class="status-section">-->
+<!--    <div class="status-title">Scraping Progress</div>-->
+<!--    <ul class="page-list" id="pageList">-->
+<!--        &lt;!&ndash; Populated by JavaScript &ndash;&gt;-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--<button class="button button-reset" id="resetButton">Reset Progress</button>-->
+
+<!--<div class="export-status" id="exportStatus" style="display: none;">-->
+<!--    Data exported to clipboard! Paste into LibreOffice Calc.-->
+<!--</div>-->
+
+<script src="popup.js"></script>
+</body>
+</html>
