@@ -160,6 +160,12 @@ class ScrapingManager {
                 sendResponse({ success: true });
                 break;
 
+            case 'scrapePage':
+                console.log('Scraping page (background.js)...');
+                // TODO - send request to content script
+                sendResponse({ success: true });
+                break;
+
             case 'getScrapingStatus':
                 sendResponse({
                     currentPageIndex: this.currentPageIndex,

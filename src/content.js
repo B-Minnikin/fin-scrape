@@ -9,6 +9,8 @@ class YahooFinanceScraper {
         browser.runtime.onMessage.addEventListener(async (request, sender, sendResponse) => {
             if (request.action === 'scrape') {
                 try {
+                    // TODO - check that page is allowed
+
                     const data = await this.scrapePageData(request.pageType)
                     browser.runtime.sendMessage({
                         action: 'scrapingComplete',

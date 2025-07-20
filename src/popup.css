@@ -1,0 +1,163 @@
+
+body {
+    width: 300px;
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: #666;
+    margin: 4px 0 0 0;
+}
+
+.status-section {
+    margin-bottom: 16px;
+}
+
+.status-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.page-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.page-item.ready {
+    background-color: #e8f5e8;
+    color: #2d5a2d;
+}
+
+.page-item.scraped {
+    background-color: #ffe8e8;
+    color: #5a2d2d;
+}
+
+.page-item.waiting {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.page-item.complete {
+    background-color: #e8f0ff;
+    color: #2d3d5a;
+}
+
+.page-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.page-status.ready {
+    background-color: #22c55e;
+}
+
+.page-status.scraped {
+    background-color: #ef4444;
+}
+
+.page-status.waiting {
+    background-color: #9ca3af;
+}
+
+.page-status.complete {
+    background-color: #3b82f6;
+}
+
+.instructions {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.popup-option {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.popup-option:hover {
+    cursor: pointer;
+    background-color: #f1f3f5;
+}
+
+.no-select {
+    -webkit-user-select: none;
+}
+
+.button {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button-reset {
+    background-color: #ef4444;
+    color: white;
+}
+
+.button-reset:hover {
+    background-color: #dc2626;
+}
+
+.button:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.export-status {
+    text-align: center;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.export-status.success {
+    background-color: #dcfce7;
+    color: #15803d;
+}
