@@ -7,8 +7,7 @@
 
 import { PageType } from "../models/PageTypes.ts";
 import { initStockData, StockData } from "../models/StockData.ts";
-import { IconState } from "../models/IconState.ts";
-import { getIcon, Icon } from "../models/Icon.ts";
+import { getIcon, Icon, IconState } from "../models/Icon.ts";
 import MessageSender = browser.runtime.MessageSender;
 
 class ScrapingManager {
