@@ -15,19 +15,21 @@
   ],
 
   "background": {
-    "scripts": ["src/background.js"],
+    "scripts": ["src/background/background.ts"],
     "type": "module"
   },
 
   "content_scripts": [
     {
-      "matches": ["*://uk.finance.yahoo.com/*"],
-      "js": ["src/content.js"]
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.ts"],
+      "run_at": "document_end",
+      "type": "module"
     }
   ],
 
   "action": {
-    "default_popup": "src/popup.html",
+    "default_popup": "src/popup/popup.html",
     "default_title": "Finance Scraper",
     "default_icon": {
       "16": "icons/icon-16.png",

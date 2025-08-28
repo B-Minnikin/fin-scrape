@@ -1,49 +1,62 @@
 // Popup script for Yahoo Finance scraper
 
 class PopupManager {
+    pageTypes: Array<string>;
+    // pageDisplayNames: Array<string>;
+
     constructor() {
         console.log('Popup initialized');
         this.pageTypes = ['summary', 'statistics', 'financials'];
-        this.pageDisplayNames = {
-            'summary': 'Summary Page',
-            'statistics': 'Key Statistics',
-            'financials': 'Financials'
-        };
+        // this.pageDisplayNames = {
+        //     'summary': 'Summary Page',
+        //     'statistics': 'Key Statistics',
+        //     'financials': 'Financials'
+        // };
     }
 
     // TODO - send request to background
     // TODO - set icon based on current page (in background I think)
 
-    initializeUI() {
+    initializeUI(): void {
         // Set the main scrape button
         const scrapeButton = document.getElementById('scrape-page-option');
+        if (!scrapeButton) {
+            console.error("Missing scrape button");
+            return;
+        }
+
         scrapeButton.addEventListener('click', async () => {
             await this.scrapePage();
         })
 
         // Set up the reset button
         const resetButton = document.getElementById('resetButton');
+        if (!resetButton) {
+            console.error("Missing reset button");
+            return;
+        }
+
         resetButton.addEventListener('click', async () => {
             await this.resetProgress();
         });
-
-        // Set up periodic status updates
-        // setInterval(async () => {
-        //     await this.loadStatus();
-        // }, 1000);
     }
 
-    async scrapePage() {
+    async scrapePage(): Promise<void> {
         console.log('Scraping page (popup.js)...');
 
         const response = await browser.runtime.sendMessage({
             action: 'scrapePage'
         });
 
+        console.log(response);
         // TODO - if success then dismiss popup
+        if (response?.success) {
+            console.log("good response");
+            window.close();
+        }
 
         // await this.updateStatusDisplay(response);
-    } catch (error) {
+    } catch (error: Error) {
         console.error('Error scraping page:', error);
     }
 
@@ -135,8 +148,12 @@ class PopupManager {
 
             // Hide export status
             const exportStatus = document.getElementById('exportStatus');
-            exportStatus.style.display = 'none';
+            if (!exportStatus) {
+                console.error("Missing export status element");
+                return;
+            }
 
+            exportStatus.style.display = 'none';
         } catch (error) {
             console.error('Error resetting progress:', error);
         }
