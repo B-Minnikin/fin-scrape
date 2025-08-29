@@ -310,7 +310,9 @@ class YahooFinanceScraper {
     }
 }
 
-const scraper = new YahooFinanceScraper();
-scraper.initializeMessageListener();
+(async () => {
+    const scraper = new YahooFinanceScraper();
+    scraper.initializeMessageListener();
 
-console.log('Content script loaded');
+    console.log('Content script loaded');
+})();

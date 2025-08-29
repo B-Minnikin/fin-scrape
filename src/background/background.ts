@@ -270,6 +270,8 @@ class ScrapingManager {
     }
 }
 
-// Initialize the scraping manager
-const scrapingManager = new ScrapingManager();
-await scrapingManager.initializeListeners();
+(async () => {
+    // Initialize the scraping manager
+    const scrapingManager = new ScrapingManager();
+    await scrapingManager.initializeListeners();
+})();

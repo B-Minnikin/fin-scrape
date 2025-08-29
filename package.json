@@ -2,10 +2,9 @@
   "name": "FinScrape",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "vite build --watch"
+    "dev": "vite build"
   },
   "dependencies": {
     "@types/firefox-webext-browser": "^120.0.4"
@@ -14,8 +13,7 @@
     "@types/chrome": "^0.1.4",
     "@types/node": "^24.3.0",
     "typescript": "^5.5.3",
-    "vite": "^7.1.3",
-    "vite-plugin-web-extension": "^4.4.5"
+    "vite": "^7.1.3"
   },
   "private": true
 }

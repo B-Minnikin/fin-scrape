@@ -15,21 +15,19 @@
   ],
 
   "background": {
-    "scripts": ["src/background/background.ts"],
-    "type": "module"
+    "scripts": ["background.js"]
   },
 
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/content.ts"],
-      "run_at": "document_end",
-      "type": "module"
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
   ],
 
   "action": {
-    "default_popup": "src/popup/popup.html",
+    "default_popup": "popup.html",
     "default_title": "Finance Scraper",
     "default_icon": {
       "16": "icons/icon-16.png",
