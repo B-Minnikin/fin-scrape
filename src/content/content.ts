@@ -1,8 +1,8 @@
 // Content script for scraping Yahoo Finance data
 
-import { getPageType } from '../helpers/url_helpers.ts';
-import { PageType } from "../models/PageTypes.ts";
-import { initStockData, StockData } from "../models/StockData.ts";
+import { getPageType } from '../helpers/url_helpers';
+import { PageType } from "../models/PageTypes";
+import { initStockData, StockData } from "../models/StockData";
 
 // Actual page
 // take scrape request

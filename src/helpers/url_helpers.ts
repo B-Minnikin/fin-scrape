@@ -1,4 +1,4 @@
-import { PageType } from "../models/PageTypes.ts";
+import { PageType } from "../models/PageTypes";
 
 export function getPageType (url: string): PageType {
     // TODO - implement

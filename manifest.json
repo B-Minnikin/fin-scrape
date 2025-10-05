@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Finance Data Scraper",
   "version": "1.0",
   "description": "Scrapes stock market data from Yahoo Finance pages & others",
@@ -7,15 +7,13 @@
   "permissions": [
     "activeTab",
     "storage",
-    "clipboardWrite"
-  ],
-
-  "host_permissions": [
+    "clipboardWrite",
     "*://uk.finance.yahoo.com/*"
   ],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "persistent": false
   },
 
   "content_scripts": [
@@ -26,7 +24,7 @@
     }
   ],
 
-  "action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_title": "Finance Scraper",
     "default_icon": {
@@ -45,9 +43,6 @@
   },
 
   "web_accessible_resources": [
-    {
-      "resources": ["icons/*"],
-      "matches": ["*://uk.finance.yahoo.com/*"]
-    }
+    "icons/*"
   ]
 }

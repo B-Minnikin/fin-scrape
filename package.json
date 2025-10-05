@@ -1,10 +1,11 @@
 {
-  "name": "FinScrape",
+  "name": "fin-scrape",
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc",
-    "dev": "vite build"
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "@types/firefox-webext-browser": "^120.0.4"
@@ -12,8 +13,12 @@
   "devDependencies": {
     "@types/chrome": "^0.1.4",
     "@types/node": "^24.3.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "html-webpack-plugin": "^5.6.4",
+    "ts-loader": "^9.5.4",
     "typescript": "^5.5.3",
-    "vite": "^7.1.3"
+    "webpack": "^5.102.0",
+    "webpack-cli": "^6.0.1"
   },
   "private": true
 }

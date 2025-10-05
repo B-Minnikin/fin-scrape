@@ -1,17 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
-    "moduleResolution": "nodenext",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "alwaysStrict": true,
     "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "outDir": "dist",
   },
   "include": ["src"],
-  "types": [
-    "chrome"
-  ]
 }

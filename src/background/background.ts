@@ -5,9 +5,9 @@
 
 // handle reset data mechanism
 
-import { PageType } from "../models/PageTypes.ts";
-import { initStockData, StockData } from "../models/StockData.ts";
-import { getIcon, Icon, IconState } from "../models/Icon.ts";
+import { PageType } from "../models/PageTypes";
+import { initStockData, StockData } from "../models/StockData";
+import { getIcon, Icon, IconState } from "../models/Icon";
 import MessageSender = browser.runtime.MessageSender;
 
 class ScrapingManager {
@@ -36,7 +36,7 @@ class ScrapingManager {
         });
 
         // Handle extension icon clicks
-        browser.action.onClicked.addListener(async (tab) => {
+        browser.browserAction.onClicked.addListener(async (tab) => {
             await this.handleIconClick(tab);
         });
 
