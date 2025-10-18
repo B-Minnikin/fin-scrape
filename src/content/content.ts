@@ -312,7 +312,7 @@ class YahooFinanceScraper {
 
 (async () => {
     const scraper = new YahooFinanceScraper();
-    scraper.initializeMessageListener();
+    //scraper.initializeMessageListener(); // TODO - delete this call?
 
     console.log('Content script loaded');
 })();

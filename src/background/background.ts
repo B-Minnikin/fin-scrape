@@ -19,7 +19,24 @@ class ScrapingManager {
         console.log('Scraping manager initialized');
     }
 
-    async initializeListeners(): Promise<void> {
+    private async injectContentScriptIfMissing(tabId: number): Promise<void> {
+        // Try to inject the content script if it isn't already present.
+        // We attempt both common build locations to support loading from root or from dist.
+        const tryFiles = ['content.js', 'dist/content.js'];
+        for (const file of tryFiles) {
+            try {
+                await browser.tabs.executeScript(tabId, { file });
+                // If injection succeeds once, stop trying.
+                return;
+            } catch (e) {
+                // Continue to next path
+                console.warn(`Failed to inject ${file}:`, e);
+            }
+        }
+        throw new Error('Unable to inject content script: tried content.js and dist/content.js');
+    }
+
+    async initialiseListeners(): Promise<void> {
         // Handle tab updates to check page compatibility
         browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             if (changeInfo.status === 'complete' && tab.url) {
@@ -103,17 +120,17 @@ class ScrapingManager {
     async updateIcon(tabId: number, state: IconState) {
         const icon: Icon = getIcon(state);
 
-        await browser.action.setIcon({
+        await browser.browserAction.setIcon({
             tabId: tabId,
             path: icon.path
         });
 
-        await browser.action.setBadgeText({
+        await browser.browserAction.setBadgeText({
             tabId: tabId,
             text: icon.text
         });
 
-        await browser.action.setBadgeBackgroundColor({
+        await browser.browserAction.setBadgeBackgroundColor({
             tabId: tabId,
             color: icon.colour || '#666666'
         });
@@ -159,9 +176,23 @@ class ScrapingManager {
 
             if (response && response.success) {
                 console.log(`Successfully scraped ${pageType} data`);
+                return;
             }
         } catch (error) {
-            console.error('Error sending scrape message:', error);
+            console.warn('Content script may not be injected yet. Attempting to inject and retry...', error);
+            try {
+                await this.injectContentScriptIfMissing(tab.id);
+                const retryResponse = await browser.tabs.sendMessage(tab.id, {
+                    action: 'scrape',
+                    pageType
+                });
+                if (retryResponse && retryResponse.success) {
+                    console.log(`Successfully scraped ${pageType} data after injection`);
+                    return;
+                }
+            } catch (injectErr) {
+                console.error('Failed to inject content script and send message:', injectErr);
+            }
         }
     }
 
@@ -193,10 +224,21 @@ class ScrapingManager {
                 }
 
                 try {
-                    const contentResponse = await browser.tabs.sendMessage(tab.id, {
+                    console.log(`Sending scrape request to content script for tabId: ${tab.id}`);
+
+                    let contentResponse = await browser.tabs.sendMessage(tab.id, {
                         action: 'scrapeContentPage',
                         pageType: PageType.Summary
                     });
+
+                    if (!contentResponse?.success) {
+                        console.warn('Content script may not be injected. Injecting and retrying...');
+                        await this.injectContentScriptIfMissing(tab.id);
+                        contentResponse = await browser.tabs.sendMessage(tab.id, {
+                            action: 'scrapeContentPage',
+                            pageType: PageType.Summary
+                        });
+                    }
 
                     if (contentResponse?.success) {
                         sendResponse({ success: true });
@@ -273,5 +315,5 @@ class ScrapingManager {
 (async () => {
     // Initialize the scraping manager
     const scrapingManager = new ScrapingManager();
-    await scrapingManager.initializeListeners();
+    await scrapingManager.initialiseListeners();
 })();

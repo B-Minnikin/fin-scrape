@@ -33,18 +33,18 @@ module.exports = {
     },
 
     plugins: [
-        new CopyPlugin({
-            patterns: [
-                { from: 'manifest.json', to: '.' },
-                { from: 'src/icons', to: 'icons', noErrorOnMissing: true },
-            ]
-        }),
-
         new HtmlWebpackPlugin({
             template: 'src/popup/popup.html',
             filename: 'popup.html',
             chunks: ['popup'],
             inject: 'body'
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: 'manifest.json', to: '.' },
+                { from: 'src/icons', to: 'icons', noErrorOnMissing: true },
+                {from: 'src/popup/popup.css', to: '.'}
+            ]
         })
     ],
 
