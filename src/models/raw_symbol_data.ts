@@ -63,10 +63,17 @@ export class RawSymbolData {
             return;
         }
 
-        this.scrapedData.push({
-            name,
-            scrapedValue: value
-        });
+        let existingRow = this.findSymbol(name);
+        if (!existingRow) {
+            this.scrapedData.push({
+                name,
+                scrapedValue: value
+            });
+
+            return;
+        }
+
+        existingRow.scrapedValue = value;
     }
 
     public findSymbol(field: SymbolField): DataRow | null {
