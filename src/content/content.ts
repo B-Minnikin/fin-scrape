@@ -136,7 +136,7 @@ class YahooFinanceScraper {
             document.querySelector('[data-testid="qsp-price"]');
         if (priceElement) {
             const value = priceElement.textContent?.trim();
-            symbolData.add(SymbolField.CurrentPrice, value);
+            symbolData.addSymbol(SymbolField.CurrentPrice, value);
         }
 
         // Extract change and change percent
