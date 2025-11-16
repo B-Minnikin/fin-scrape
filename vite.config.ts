@@ -8,21 +8,23 @@ export default defineConfig({
         outDir: 'dist',
         rollupOptions: {
             input: {
-                content: resolve(__dirname, 'src/content/content.ts'),
                 background: resolve(__dirname, 'src/background/background.ts'),
                 popup: resolve(__dirname, 'src/popup/popup.html'),
             },
             output: {
+                format: 'es',
                 entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]'
+                assetFileNames: '[name].[ext]',
+                inlineDynamicImports: false,
             }
         }
     },
-    plugins: [{
+    plugins: [
+        {
         name: 'copy-assets',
         generateBundle(): void {
-            const manifest = readFileSync('manifest.json', 'utf-8');
+            const manifest = readFileSync(resolve(__dirname, 'manifest.json'), 'utf-8');
+            console.log(`Manifest path=${manifest}`);
             this.emitFile({
                 type: 'asset',
                 fileName: 'manifest.json',

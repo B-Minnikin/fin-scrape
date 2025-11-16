@@ -1,5 +1,6 @@
-import { DataRow, RawSymbolData, SymbolField } from './raw_symbol_data';
+import { DataRow, RawSymbolData, requiredFields, SymbolField } from './raw_symbol_data';
 import { processorIterator, processors } from './symbol_processors';
+import SymbolPreview from './symbol_preview';
 
 type ProcessedSymbolMap = Map<SymbolField, DataRow>;
 
@@ -12,13 +13,35 @@ export class PresentationSymbol {
         this._rawSymbolData = rawSymbolData;
     }
 
-    public updateSymbolData(rawSymbolData: RawSymbolData): void {
+    public updateSymbolData(rawSymbolData: RawSymbolData | undefined): void {
+        if (!rawSymbolData) {
+            console.error(`Missing raw symbol data when attempting to update presentation symbol`);
+            return;
+        }
+
         this._rawSymbolData = rawSymbolData;
+        this.calculateRows();
     }
 
     public reset(): void {
         this._rawSymbolData = null;
         this._processedSymbolMap.clear();
+    }
+
+    public generatePreview(): SymbolPreview {
+        const preview = new SymbolPreview();
+
+        for (const requiredField of requiredFields) {
+            const isFound = this._rawSymbolData?.find(requiredField);
+
+            preview.previews = {
+                done: isFound != null,
+                tooltip: 'ba',
+                abbreviation: 'aa'
+            };
+        }
+
+        return preview;
     }
 
     private calculateRows(): void {

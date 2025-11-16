@@ -5,6 +5,7 @@
   "description": "Scrapes stock market data from Yahoo Finance pages & others",
 
   "permissions": [
+    "tabs",
     "activeTab",
     "storage",
     "clipboardWrite"
@@ -15,7 +16,8 @@
   ],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "type": "module"
   },
 
   "content_scripts": [

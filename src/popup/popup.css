@@ -161,3 +161,20 @@ body {
     background-color: #dcfce7;
     color: #15803d;
 }
+
+.preview {
+    margin: 1rem;
+    border: 1px solid black;
+    border-radius: 2px;
+    height: 0.3rem;
+    width: 0.3rem;
+    font-size: 0.4rem;
+}
+
+.preview.is-not-complete {
+    background-color: #9ca3af;
+}
+
+.preview.is-complete {
+    background-color: #22c55e;
+}

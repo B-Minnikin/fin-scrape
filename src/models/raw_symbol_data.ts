@@ -1,3 +1,4 @@
+import SymbolPreview from './symbol_preview';
 
 export enum SymbolField {
     PeRatio,
@@ -23,6 +24,14 @@ export enum SymbolField {
     Beta,
     RevenueGrowth,
 }
+
+export const requiredFields: SymbolField[] = [
+    SymbolField.Symbol,
+    SymbolField.CompanyName,
+    SymbolField.Exchange,
+    SymbolField.PeRatio,
+    SymbolField.MarketCap,
+]
 
 export type UnderlyingValue = string | number | null;
 

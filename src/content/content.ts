@@ -1,8 +1,8 @@
-// Content script for scraping Yahoo Finance data
-
-import { getPageType } from '../helpers/url_helpers.ts';
-import { PageType } from "../models/PageTypes.ts";
-import { initStockData, StockData } from "../models/StockData.ts";
+import UrlHelper from '../helpers/url_helper';
+import { PageType } from '../models/page_types';
+import { ContentAction, ScrapeRequest, ScrapeResponse } from '../models/actions';
+import { RawSymbolData, SymbolField } from '../models/raw_symbol_data';
+import MessageSender = browser.runtime.MessageSender;
 
 // Actual page
 // take scrape request
@@ -13,145 +13,142 @@ import { initStockData, StockData } from "../models/StockData.ts";
 console.log("Content ??");
 
 class YahooFinanceScraper {
+    private _rawSymbolData: RawSymbolData;
+
     constructor() {
+        this._rawSymbolData = new RawSymbolData();
+
         this.initializeMessageListener();
     }
 
-    initializeMessageListener() {
+    initializeMessageListener(): void {
         console.log("Content init");
 
-        browser.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-            console.log(`Content action: ${request.action}`);
-            console.log(request);
+        browser.runtime.onMessage.addListener(async (request: ScrapeRequest, sender: MessageSender) => {
+            const url = request.url;
+            console.log(url); // TODO - delete
 
-            // TODO - get the current tab
-            // send the url to the url helper
-            // use that to get the pageType instead of passing the value
+            // TODO - is this in the right place?
+            if (request.action === ContentAction.ResetScrape) {
+                this._rawSymbolData = new RawSymbolData();
+            }
 
-            if (request.action === 'scrapeContentPage') {
-                console.log("Scrape in content script");
+            if (request.action === ContentAction.CopyToClipboard) {
+                // TODO - implement
+            }
 
-                const url = sender.tab?.url;
-                if (url === undefined) {
+            if (request.action === ContentAction.ScrapingComplete) {
+                // TODO - implement
+            }
+
+            if (request.action === ContentAction.ScrapeContentPage) {
+                if (!url) {
                     console.error("Undefined url");
-                    sendResponse({ success: false, error: 'URL is not valid' });
-                    return;
+                    return { success: false, error: 'URL is not valid' };
                 }
 
-                const pageType = getPageType(url);
+                const pageType: PageType = UrlHelper.identifyPageType(url);
 
                 try {
-                    if (!this.isPageValid()) {
-                        console.warn('Page is not valid');
-                        sendResponse({ success: false, error: 'Page is not valid' });
-                        return;
+                    if (pageType === PageType.Unknown) {
+                        console.warn(`Page is not valid: ${url}`);
+                        return {
+                            success: false,
+                            error: 'Page is not valid'
+                        } as ScrapeResponse;
                     }
 
-                    const data = await this.scrapePageData(request.pageType)
-                    sendResponse({
+                    const data: RawSymbolData = await this.scrapePageData(pageType);
+                    console.log(data);
+
+                    return {
                         success: true,
-                        data: data
-                    });
+                        rawSymbolData: data
+                    } as ScrapeResponse;
                 } catch (error) {
                         console.error('Scraping error:', error);
 
                         if (error instanceof Error) {
-                            sendResponse({ success: false, error: error.message });
+                            return { success: false, error: error.message };
                         }
                 }
-
-                return true; // Keep the message channel open
             }
         });
     }
 
-    isPageValid() {
-        const currentUrl = window.location.href;
-        const quotePattern = /^https:\/\/uk\.finance\.yahoo\.com\/quote\/[A-Z0-9.-]+\/?$/i;
-        const comparePattern = /^https:\/\/uk\.finance\.yahoo\.com\/compare\/[A-Z0-9.-]+\/?$/i;
-
-        const result = quotePattern.test(currentUrl) || comparePattern.test(currentUrl);
-        if (!result) {
-            console.warn('Page is not valid');
-        }
-
-        return result;
-    }
-
-    async scrapePageData(pageType: PageType): Promise<StockData> {
-        const stockData: StockData = initStockData();
-
+    private async scrapePageData(pageType: PageType): Promise<RawSymbolData> {
         switch (pageType) {
             case PageType.Summary:
-                this.scrapeSummaryPage(stockData);
+                this.scrapeSummaryPage(this._rawSymbolData);
                 break;
             case PageType.Comparison:
-                this.scrapeComparisonPage(stockData);
+                this.scrapeComparisonPage(this._rawSymbolData);
                 break;
             case PageType.Statistics:
-                // this.scrapeStatisticsPage(stockData);
+                // this.scrapeStatisticsPage(this._rawSymbolData);
                 break;
             case PageType.Financials:
-                // this.scrapeFinancialsPage(stockData);
+                // this.scrapeFinancialsPage(this._rawSymbolData);
                 break;
             default:
                 throw new Error(`Unknown page type: ${pageType}`);
         }
 
-        return stockData;
+        return this._rawSymbolData;
     }
 
-    scrapeSummaryPage(stockData: StockData) {
+    private scrapeSummaryPage(symbolData: RawSymbolData): void {
         console.log('Scraping summary page...');
 
-        // symbol
-        // company name
         // beta
         // P/E - trailing
         // P/E - forward
-        // market cap
         // EV
         // profit margin
         // debt to equity
         // PEG ratio
         // EV/EBITDA
+        // dividends
 
-        // Extract symbol
-        const symbolElement = document.querySelector('h1[data-symbol]');
+        // ----- Symbol
+        const symbolElement: Element | null = document.querySelector('h1[data-symbol]');
         if (symbolElement) {
-            stockData.symbol = symbolElement.getAttribute('data-symbol') ?? "[No Symbol]";
+            symbolData.add(SymbolField.Symbol, symbolElement.getAttribute('data-symbol') ?? "[No Symbol]");
         } else {
             // Fallback: extract from URL
             const urlMatch = window.location.href.match(/\/quote\/([^\/\?]+)/);
-            stockData.symbol = urlMatch ? urlMatch[1] : '';
+            symbolData.add(SymbolField.Symbol, urlMatch ? urlMatch[1] : '');
         }
 
-        // Extract company name
+        // ----- Company Name
         const companyNameElement = document.querySelector('h1');
         if (companyNameElement) {
             const fullText = companyNameElement.textContent?.trim();
+            const extracted = fullText?.replace(/\s*\([^)]*\)\s*$/, '').trim();
             // Remove symbol in parentheses
-            stockData.companyName = fullText?.replace(/\s*\([^)]*\)\s*$/, '').trim();
+
+            symbolData.add(SymbolField.CompanyName, extracted);
         }
 
-        // Extract current price
+        // ----- Current Price
         const priceElement = document.querySelector('[data-symbol] + div span') ||
             document.querySelector('fin-streamer[data-field="regularMarketPrice"]') ||
             document.querySelector('[data-testid="qsp-price"]');
         if (priceElement) {
-            stockData.currentPrice = parseInt(priceElement.textContent?.trim() ?? "");
+            const value = priceElement.textContent?.trim();
+            symbolData.add(SymbolField.CurrentPrice, value);
         }
 
         // Extract change and change percent
-        const changeElements = document.querySelectorAll('fin-streamer[data-field*="change"]');
-        changeElements.forEach(el => {
-            const field = el.getAttribute('data-field');
-            if (field === 'regularMarketChange') {
-                stockData.change = parseInt(el.textContent?.trim() ?? "");
-            } else if (field === 'regularMarketChangePercent') {
-                stockData.changePercent = parseInt(el.textContent?.trim() ?? "");
-            }
-        });
+        // const changeElements = document.querySelectorAll('fin-streamer[data-field*="change"]');
+        // changeElements.forEach(el => {
+        //     const field = el.getAttribute('data-field');
+        //     if (field === 'regularMarketChange') {
+        //         symbolData.change = parseInt(el.textContent?.trim() ?? "");
+        //     } else if (field === 'regularMarketChangePercent') {
+        //         symbolData.changePercent = parseInt(el.textContent?.trim() ?? "");
+        //     }
+        // });
 
         // Extract market cap from the summary table
         const summaryTable = document.querySelector('[data-testid="quote-statistics"]') ||
@@ -166,16 +163,17 @@ class YahooFinanceScraper {
                 if (labelCell && valueCell) {
                     const label = labelCell.textContent?.trim().toLowerCase();
                     if (label?.includes('market cap')) {
-                        stockData.marketCap = parseInt(valueCell.textContent?.trim() ?? "");
+                        const value = valueCell.textContent?.trim();
+                        symbolData.add(SymbolField.MarketCap, value);
                     }
                 }
             });
         }
 
-        console.log('Summary data scraped:', stockData);
+        console.log('Summary data scraped:', symbolData);
     }
 
-    scrapeComparisonPage(stockData: StockData) {
+    private scrapeComparisonPage(symbolData: RawSymbolData): void {
         console.log('Scraping comparison page...');
 
         // TODO - complete
@@ -231,7 +229,7 @@ class YahooFinanceScraper {
     //     return data;
     // }
 
-    scrapeYahooSummaryPage() {
+    private scrapeYahooSummaryPage(): void {
         console.log('Scraping Yahoo summary page...');
 
         // extract the stock name from the URL
@@ -294,12 +292,12 @@ class YahooFinanceScraper {
     // }
 
     // Utility method to safely extract text content
-    safeTextContent(element: HTMLElement) {
+    private safeTextContent(element: HTMLElement): string | undefined {
         return element ? element.textContent?.trim() : '';
     }
 
     // Utility method to find the element by text content
-    findElementByText(selector: string, text: string) {
+    private findElementByText(selector: string, text: string): Element | null {
         const elements = document.querySelectorAll(selector);
         for (let element of elements) {
             if (element.textContent?.toLowerCase().includes(text.toLowerCase())) {
@@ -310,7 +308,7 @@ class YahooFinanceScraper {
     }
 }
 
-(async () => {
+(async (): Promise<void> => {
     const scraper = new YahooFinanceScraper();
     scraper.initializeMessageListener();
 

@@ -1,17 +1,20 @@
-// Popup script for Yahoo Finance scraper
+import { BackgroundRequest, ContentAction, ScrapeResponse } from '../models/actions';
+import SymbolPreview, { PreviewRow } from '../models/symbol_preview';
 
 class PopupManager {
-    pageTypes: Array<string>;
+    preview: SymbolPreview;
+    // pageTypes: Array<string>;
     // pageDisplayNames: Array<string>;
 
     constructor() {
         console.log('Popup initialized');
-        this.pageTypes = ['summary', 'statistics', 'financials'];
+        // this.pageTypes = ['summary', 'statistics', 'financials'];
         // this.pageDisplayNames = {
         //     'summary': 'Summary Page',
         //     'statistics': 'Key Statistics',
         //     'financials': 'Financials'
         // };
+        this.preview = new SymbolPreview();
     }
 
     // TODO - send request to background
@@ -36,7 +39,7 @@ class PopupManager {
             return;
         }
 
-        resetButton.addEventListener('click', async () => {
+        resetButton.addEventListener('click', async (): Promise<void> => {
             await this.resetProgress();
         });
     }
@@ -44,20 +47,55 @@ class PopupManager {
     async scrapePage(): Promise<void> {
         console.log('Scraping page (popup.js)...');
 
-        const response = await browser.runtime.sendMessage({
-            action: 'scrapePage'
-        });
+        const response: ScrapeResponse = await browser.runtime.sendMessage({
+            action: ContentAction.ScrapeContentPage,
+        } as BackgroundRequest);
 
         console.log(response);
-        // TODO - if success then dismiss popup
+
         if (response?.success) {
             console.log("good response");
-            window.close();
+
+            const preview = response?.preview;
+            if (preview) {
+                this.preview = preview;
+                this.updatePreview();
+            }
+
+            window.close(); // TODO - keep open for preview?
         }
 
         // await this.updateStatusDisplay(response);
     } catch (error: Error) {
         console.error('Error scraping page:', error);
+    }
+
+    private updatePreview(): void {
+        const previewPanelElement = document.getElementById('preview-panel');
+        if (!previewPanelElement) {
+            console.error(`Failed to find preview panel`);
+            return;
+        }
+
+        const previewTemplate = document.getElementById('preview-template');
+        if (!previewTemplate) {
+            console.error(`Failed to find preview template`);
+            return;
+        }
+
+        for (const preview of this.preview.previews) {
+            const clone = previewTemplate.cloneNode(true);
+            const mainElem = clone.parentElement?.querySelector('div.preview');
+            const p = clone.parentElement?.querySelector('p');
+
+            mainElem?.classList.add(preview?.done ? 'is-complete' : 'is-not-complete')
+
+            if (p) {
+                p.innerText = preview.abbreviation || '';
+            }
+
+            previewPanelElement.appendChild(clone);
+        }
     }
 
     // async loadStatus() {
@@ -137,11 +175,11 @@ class PopupManager {
     //     }
     // }
 
-    async resetProgress() {
+    async resetProgress(): Promise<void> {
         try {
             await browser.runtime.sendMessage({
-                action: 'resetScraping'
-            });
+                action: ContentAction.ResetScrape
+            } as BackgroundRequest);
 
             // Reload status immediately
             // await this.loadStatus();
@@ -169,7 +207,7 @@ class PopupManager {
     }
 }
 
-// Initialize the popup when DOM is loaded
+// Initialise the popup when DOM is loaded
 (async () => {
     const popupManager = new PopupManager();
     popupManager.initializeUI();
