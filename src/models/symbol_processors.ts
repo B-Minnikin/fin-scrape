@@ -25,7 +25,7 @@ export const processors: Processor = {
     [SymbolField.PeRatio]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.PeRatio;
 
-        const rawValue = rawSymbolData.find(thisField);
+        const rawValue = rawSymbolData.findSymbol(thisField);
         if (!rawValue) return null;
 
         const value: number | null = ConversionHelper.toFloat(rawValue.scrapedValue);

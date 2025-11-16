@@ -113,11 +113,11 @@ class YahooFinanceScraper {
         // ----- Symbol
         const symbolElement: Element | null = document.querySelector('h1[data-symbol]');
         if (symbolElement) {
-            symbolData.add(SymbolField.Symbol, symbolElement.getAttribute('data-symbol') ?? "[No Symbol]");
+            symbolData.addSymbol(SymbolField.Symbol, symbolElement.getAttribute('data-symbol') ?? "[No Symbol]");
         } else {
             // Fallback: extract from URL
             const urlMatch = window.location.href.match(/\/quote\/([^\/\?]+)/);
-            symbolData.add(SymbolField.Symbol, urlMatch ? urlMatch[1] : '');
+            symbolData.addSymbol(SymbolField.Symbol, urlMatch ? urlMatch[1] : '');
         }
 
         // ----- Company Name
@@ -127,7 +127,7 @@ class YahooFinanceScraper {
             const extracted = fullText?.replace(/\s*\([^)]*\)\s*$/, '').trim();
             // Remove symbol in parentheses
 
-            symbolData.add(SymbolField.CompanyName, extracted);
+            symbolData.addSymbol(SymbolField.CompanyName, extracted);
         }
 
         // ----- Current Price
@@ -164,7 +164,7 @@ class YahooFinanceScraper {
                     const label = labelCell.textContent?.trim().toLowerCase();
                     if (label?.includes('market cap')) {
                         const value = valueCell.textContent?.trim();
-                        symbolData.add(SymbolField.MarketCap, value);
+                        symbolData.addSymbol(SymbolField.MarketCap, value);
                     }
                 }
             });

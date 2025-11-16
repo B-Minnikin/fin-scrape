@@ -139,7 +139,7 @@ class ScrapingManager {
                     console.log(contentResponse);
 
                     if (contentResponse?.success) {
-                        this.presentationSymbol.updateSymbolData(contentResponse.rawSymbolData)
+                        this.presentationSymbol.updateSymbolData(RawSymbolData.fromPlainObject(contentResponse.rawSymbolData));
 
                         sendResponse({
                             success: true,

@@ -13,7 +13,7 @@ export class PresentationSymbol {
         this._rawSymbolData = rawSymbolData;
     }
 
-    public updateSymbolData(rawSymbolData: RawSymbolData | undefined): void {
+    public updateSymbolData(rawSymbolData: RawSymbolData | null | undefined): void {
         if (!rawSymbolData) {
             console.error(`Missing raw symbol data when attempting to update presentation symbol`);
             return;
@@ -32,7 +32,7 @@ export class PresentationSymbol {
         const preview = new SymbolPreview();
 
         for (const requiredField of requiredFields) {
-            const isFound = this._rawSymbolData?.find(requiredField);
+            const isFound = this._rawSymbolData?.findSymbol(requiredField);
 
             preview.previews = {
                 done: isFound != null,

@@ -1,4 +1,3 @@
-import SymbolPreview from './symbol_preview';
 
 export enum SymbolField {
     PeRatio,
@@ -50,7 +49,15 @@ export class RawSymbolData {
         this.scrapedData = [];
     }
 
-    public add(name: SymbolField, value: string | undefined): void {
+    public static fromPlainObject(plainObject: object | undefined): RawSymbolData | null {
+        if (!plainObject) return null;
+
+        const instance = new RawSymbolData();
+        Object.assign(instance, plainObject);
+        return instance;
+    }
+
+    public addSymbol(name: SymbolField, value: string | undefined): void {
         if (!value) {
             console.warn(`No value when attempting to add data for: ${name}`);
             return;
@@ -62,7 +69,7 @@ export class RawSymbolData {
         });
     }
 
-    public find(field: SymbolField): DataRow | null {
+    public findSymbol(field: SymbolField): DataRow | null {
         const dataRow = this.scrapedData.find((dr: DataRow) => dr.name === field);
         if (!dataRow) return null;
 
