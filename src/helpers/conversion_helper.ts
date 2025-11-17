@@ -52,4 +52,17 @@ export default class ConversionHelper {
 
         return number * postfixQuantity;
     }
+
+    public static toFloatFromPercentage(stringValue: string | null): number | null {
+        if (!stringValue || stringValue.length === 0) return null;
+
+        if (!stringValue.trim().endsWith('%')) return null;
+
+        const numberSegment = stringValue.trim().slice(0, -1);
+        const number = parseFloat(numberSegment);
+
+        return isNaN(number)
+            ? null
+            : number;
+    }
 }

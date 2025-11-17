@@ -88,6 +88,13 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.Beta, extracted);
         }
 
+        // ----- Profit Margin
+        const profitMarginElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Profit margin')
+        if (profitMarginElement) {
+            const fullText = profitMarginElement?.children[1]?.textContent?.trim();
+            symbolData.addSymbol(SymbolField.ProfitMargin, fullText);
+        }
+
         // ----- Market Cap
         const marketCapElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Market cap')
         if (marketCapElement) {

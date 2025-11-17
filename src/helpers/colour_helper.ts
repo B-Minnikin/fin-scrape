@@ -34,6 +34,11 @@ export default class ColourHelper {
                 // Forward P/E should be lower than trailing
                 if (value < comparisonValue) return colours[Colour.Green];
                 break;
+            case SymbolField.ProfitMargin:
+                if (value < 0.5) return colours[Colour.Red];
+                if (value >= 0.5 && value < 10.0) return colours[Colour.Yellow];
+                if (value >= 10.0) return colours[Colour.Green];
+                break;
             case SymbolField.EnterpriseValue:
                 if (!comparisonValue) return null;
 

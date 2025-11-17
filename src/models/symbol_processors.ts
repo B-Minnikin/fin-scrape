@@ -44,6 +44,22 @@ export const processors: Processor = {
             colour: ColourHelper.getColour(thisField, numberValue, trailingPeRatioNumberValue),
         };
     },
+    [SymbolField.ProfitMargin]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        const thisField: SymbolField = SymbolField.ProfitMargin;
+
+        const dataRow = rawSymbolData.findSymbol(thisField);
+        if (!dataRow) return null;
+
+        const numberValue: number | null = ConversionHelper.toFloatFromPercentage(dataRow.scrapedValue);
+
+        return {
+            name: thisField,
+            scrapedValue: dataRow.scrapedValue,
+            displayValue: dataRow.scrapedValue,
+            underlyingValue: numberValue,
+            colour: ColourHelper.getColour(thisField, numberValue),
+        };
+    },
     [SymbolField.Beta]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.Beta, rawSymbolData);
     },
