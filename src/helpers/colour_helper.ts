@@ -28,6 +28,12 @@ export default class ColourHelper {
                 if (value > 15 && value <= 18) return colours[Colour.Yellow];
                 if (value > 18) return colours[Colour.Red];
                 break;
+            case SymbolField.ForwardPeRatio:
+                if (!comparisonValue) return null;
+
+                // Forward P/E should be lower than trailing
+                if (value < comparisonValue) return colours[Colour.Green];
+                break;
             case SymbolField.EnterpriseValue:
                 if (!comparisonValue) return null;
 

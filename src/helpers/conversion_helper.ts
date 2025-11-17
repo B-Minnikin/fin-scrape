@@ -34,7 +34,7 @@ export default class ConversionHelper {
     public static toFloatFromShorthand(shortFloat: string | null): number | null {
         if (!shortFloat || shortFloat.length === 0) return null;
 
-        const postfix = shortFloat.at(shortFloat.length - 1);
+        const postfix = shortFloat.trim().at(shortFloat.length - 1);
         if (!postfix) return null;
         // @ts-ignore
         if (!(postfix.toUpperCase() === 'B' ^ postfix.toUpperCase() === 'M')) return null;
@@ -45,7 +45,7 @@ export default class ConversionHelper {
             ? 1000000
             : 1000000000;
 
-        const numberSegment = shortFloat.slice(0, -1);
+        const numberSegment = shortFloat.trim().slice(0, -1);
         const number = parseFloat(numberSegment);
 
         if (isNaN(number)) return null;

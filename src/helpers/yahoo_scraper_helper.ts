@@ -67,6 +67,13 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.PeRatio, extracted);
         }
 
+        // ----- Forward P/E Ratio
+        const forwardPeElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Forward P/E')
+        if (forwardPeElement) {
+            const fullText = forwardPeElement?.children[1]?.textContent?.trim();
+            symbolData.addSymbol(SymbolField.ForwardPeRatio, fullText);
+        }
+
         // ----- Beta
         const betaElement = document.querySelector('span[title="Beta (5Y monthly)"] + span');
         console.log(betaElement);

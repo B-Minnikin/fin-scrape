@@ -1,6 +1,7 @@
 
 export enum SymbolField {
     PeRatio,
+    ForwardPeRatio,
     Symbol,
     Exchange,
     CompanyName,
@@ -36,6 +37,7 @@ export const requiredFields: SymbolField[] = [
     SymbolField.CompanyName,
     SymbolField.Exchange,
     SymbolField.PeRatio,
+    SymbolField.ForwardPeRatio,
     SymbolField.Beta,
     SymbolField.MarketCap,
     SymbolField.EnterpriseValue,

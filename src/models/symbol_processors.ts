@@ -22,6 +22,28 @@ export const processors: Processor = {
     [SymbolField.PeRatio]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.PeRatio, rawSymbolData);
     },
+    [SymbolField.ForwardPeRatio]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        const thisField: SymbolField = SymbolField.ForwardPeRatio;
+
+        const trailingPeRatioDataRow = rawSymbolData.findSymbol(SymbolField.MarketCap);
+        if (!trailingPeRatioDataRow) {
+            console.warn('Trailing P/E ratio is missing when attempting to calculate forward P/E ratio');
+        }
+
+        const dataRow = rawSymbolData.findSymbol(thisField);
+        if (!dataRow) return null;
+
+        const trailingPeRatioNumberValue: number | null = ConversionHelper.toFloat(trailingPeRatioDataRow?.scrapedValue ?? null);
+        const numberValue: number | null = ConversionHelper.toFloat(dataRow.scrapedValue);
+
+        return {
+            name: thisField,
+            scrapedValue: dataRow.scrapedValue,
+            displayValue: dataRow.scrapedValue,
+            underlyingValue: numberValue,
+            colour: ColourHelper.getColour(thisField, numberValue, trailingPeRatioNumberValue),
+        };
+    },
     [SymbolField.Beta]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.Beta, rawSymbolData);
     },
