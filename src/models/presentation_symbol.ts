@@ -28,6 +28,22 @@ export class PresentationSymbol {
         this._processedSymbolMap.clear();
     }
 
+    public getPreparedDataRows(): DataRow[] {
+        // This should already be in the expected order for the spreadsheet
+        return requiredFields.map((s: SymbolField): DataRow => {
+            const dataRow = this._processedSymbolMap.get(s);
+            if (!dataRow) {
+                return {
+                    name: s,
+                    scrapedValue: null,
+                    displayValue: null,
+                };
+            }
+
+            return dataRow;
+        });
+    }
+
     public generatePreview(): SymbolPreview {
         const preview = new SymbolPreview();
 
@@ -50,18 +66,18 @@ export class PresentationSymbol {
             return;
         }
 
-        for (const [key, func] of processorIterator(processors)) {
+        for (const [keyStr, func] of Object.entries(processors)) {
+            const key = Number(keyStr) as SymbolField;
+
             if (!func) {
                 console.warn(`Missing func for processor of type: ${key}`);
                 continue;
             }
 
-            const k = key as unknown as SymbolField;
-
             const dataRow: DataRow | null = func(this._rawSymbolData);
             if (!dataRow?.displayValue) continue; // Don't overwrite with null results
 
-            this._processedSymbolMap.set(k, dataRow);
+            this._processedSymbolMap.set(key, dataRow);
         }
     }
 }

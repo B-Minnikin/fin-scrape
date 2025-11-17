@@ -8,20 +8,27 @@ export enum SymbolField {
     Change,
     ChangePercent,
     MarketCap,
+    EnterpriseValue,
+    EnterpriceValueToRevenue,
     Eps,
     Dividend,
     Revenue,
+    GrossProfit,
+    OperatingIncome,
     NetIncome,
     Date,
     Peg,
     Pegr,
     PriceToFreeCashFlowPerShare,
     EvToEbitda,
+    TotalCash,
+    TotalDebt,
     DebtToEquity,
     Roic,
     NetMargin,
     Beta,
     RevenueGrowth,
+    PriceToBook,
 }
 
 export const requiredFields: SymbolField[] = [
@@ -29,8 +36,17 @@ export const requiredFields: SymbolField[] = [
     SymbolField.CompanyName,
     SymbolField.Exchange,
     SymbolField.PeRatio,
+    SymbolField.Beta,
     SymbolField.MarketCap,
-]
+    SymbolField.EnterpriseValue,
+    SymbolField.EvToEbitda,
+    SymbolField.NetMargin,
+    SymbolField.RevenueGrowth,
+    SymbolField.PriceToFreeCashFlowPerShare,
+    SymbolField.Roic,
+    SymbolField.DebtToEquity,
+    SymbolField.Dividend,
+];
 
 export type UnderlyingValue = string | number | null;
 
