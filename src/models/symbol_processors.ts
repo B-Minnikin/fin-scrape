@@ -45,20 +45,7 @@ export const processors: Processor = {
         };
     },
     [SymbolField.ProfitMargin]: (rawSymbolData: RawSymbolData): DataRow | null => {
-        const thisField: SymbolField = SymbolField.ProfitMargin;
-
-        const dataRow = rawSymbolData.findSymbol(thisField);
-        if (!dataRow) return null;
-
-        const numberValue: number | null = ConversionHelper.toFloatFromPercentage(dataRow.scrapedValue);
-
-        return {
-            name: thisField,
-            scrapedValue: dataRow.scrapedValue,
-            displayValue: dataRow.scrapedValue,
-            underlyingValue: numberValue,
-            colour: ColourHelper.getColour(thisField, numberValue),
-        };
+        return basicNumberPercentageField(SymbolField.ProfitMargin, rawSymbolData);
     },
     [SymbolField.DebtToEquity]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberPercentageField(SymbolField.DebtToEquity, rawSymbolData);

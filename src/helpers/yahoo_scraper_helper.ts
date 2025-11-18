@@ -102,6 +102,13 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.DebtToEquity, fullText);
         }
 
+        // ----- PEG Ratio
+        const pegRatioElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'PEG ratio (5-yr expected)')
+        if (pegRatioElement) {
+            const fullText = pegRatioElement?.children[1]?.textContent?.trim();
+            symbolData.addSymbol(SymbolField.Peg, fullText);
+        }
+
         // ----- Market Cap
         const marketCapElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Market cap')
         if (marketCapElement) {
@@ -205,7 +212,7 @@ export default class YahooScraperHelper {
                     } else if (label.includes('price/book')) {
                         rawSymbolData.addSymbol(SymbolField.PriceToBook, value);
                     } else if (label.includes('enterprise value/revenue')) {
-                        rawSymbolData.addSymbol(SymbolField.EnterpriceValueToRevenue, value);
+                        rawSymbolData.addSymbol(SymbolField.EnterpriseValueToRevenue, value);
                     } else if (label.includes('beta')) {
                         rawSymbolData.addSymbol(SymbolField.Beta, value);
                     }

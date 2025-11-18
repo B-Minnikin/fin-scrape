@@ -10,7 +10,7 @@ export enum SymbolField {
     ChangePercent,
     MarketCap,
     EnterpriseValue,
-    EnterpriceValueToRevenue,
+    EnterpriseValueToRevenue,
     Eps,
     Dividend,
     Revenue,
