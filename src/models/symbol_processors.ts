@@ -50,6 +50,9 @@ export const processors: Processor = {
     [SymbolField.DebtToEquity]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberPercentageField(SymbolField.DebtToEquity, rawSymbolData);
     },
+    [SymbolField.Dividend]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberField(SymbolField.Dividend, rawSymbolData);
+    },
     [SymbolField.Beta]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.Beta, rawSymbolData);
     },

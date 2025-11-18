@@ -102,6 +102,18 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.DebtToEquity, fullText);
         }
 
+        // ----- Dividend
+        const dividendElement = document.querySelector('span[title="Forward dividend & yield"] + span');
+        if (dividendElement) {
+            const extracted = dividendElement
+                .textContent?.trim()?.match(/\(([\d.]+)%\)/);
+            console.log(extracted);
+
+            if (extracted && extracted.length > 1) {
+                symbolData.addSymbol(SymbolField.Dividend, extracted[1]);
+            }
+        }
+
         // ----- PEG Ratio
         const pegRatioElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'PEG ratio (5-yr expected)')
         if (pegRatioElement) {
