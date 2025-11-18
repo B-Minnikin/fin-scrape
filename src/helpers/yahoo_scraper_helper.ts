@@ -95,6 +95,13 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.ProfitMargin, fullText);
         }
 
+        // ----- Debt to Equity
+        const debtToEquityElement = li.find(p => p.firstElementChild?.textContent?.trim().startsWith('Total debt/equity'))
+        if (debtToEquityElement) {
+            const fullText = debtToEquityElement?.children[1]?.textContent?.trim();
+            symbolData.addSymbol(SymbolField.DebtToEquity, fullText);
+        }
+
         // ----- Market Cap
         const marketCapElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Market cap')
         if (marketCapElement) {

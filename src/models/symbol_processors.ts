@@ -60,6 +60,9 @@ export const processors: Processor = {
             colour: ColourHelper.getColour(thisField, numberValue),
         };
     },
+    [SymbolField.DebtToEquity]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberPercentageField(SymbolField.DebtToEquity, rawSymbolData);
+    },
     [SymbolField.Beta]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.Beta, rawSymbolData);
     },
@@ -129,5 +132,20 @@ function basicNumberField(thisField: SymbolField, rawSymbolData: RawSymbolData):
         displayValue: value?.toString() || '',
         underlyingValue: value,
         colour: ColourHelper.getColour(thisField, value),
+    };
+}
+
+function basicNumberPercentageField(thisField: SymbolField, rawSymbolData: RawSymbolData): DataRow | null {
+    const dataRow = rawSymbolData.findSymbol(thisField);
+    if (!dataRow) return null;
+
+    const numberValue: number | null = ConversionHelper.toFloatFromPercentage(dataRow.scrapedValue);
+
+    return {
+        name: thisField,
+        scrapedValue: dataRow.scrapedValue,
+        displayValue: dataRow.scrapedValue,
+        underlyingValue: numberValue,
+        colour: ColourHelper.getColour(thisField, numberValue),
     };
 }

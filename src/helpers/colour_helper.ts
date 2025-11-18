@@ -39,6 +39,11 @@ export default class ColourHelper {
                 if (value >= 0.5 && value < 10.0) return colours[Colour.Yellow];
                 if (value >= 10.0) return colours[Colour.Green];
                 break;
+            case SymbolField.DebtToEquity:
+                if (value > 70.0) return colours[Colour.Red];
+                if (value > 50.0) return colours[Colour.Yellow];
+                if (value >= 0.0) return colours[Colour.Green];
+                break;
             case SymbolField.EnterpriseValue:
                 if (!comparisonValue) return null;
 
