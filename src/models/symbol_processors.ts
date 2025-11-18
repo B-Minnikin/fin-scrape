@@ -53,6 +53,9 @@ export const processors: Processor = {
     [SymbolField.Beta]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.Beta, rawSymbolData);
     },
+    [SymbolField.Peg]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberField(SymbolField.Peg, rawSymbolData);
+    },
     [SymbolField.MarketCap]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.MarketCap;
 
