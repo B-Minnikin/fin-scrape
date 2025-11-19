@@ -151,17 +151,6 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.CurrentPrice, value);
         }
 
-        // Extract change and change percent
-        // const changeElements = document.querySelectorAll('fin-streamer[data-field*="change"]');
-        // changeElements.forEach(el => {
-        //     const field = el.getAttribute('data-field');
-        //     if (field === 'regularMarketChange') {
-        //         symbolData.change = parseInt(el.textContent?.trim() ?? "");
-        //     } else if (field === 'regularMarketChangePercent') {
-        //         symbolData.changePercent = parseInt(el.textContent?.trim() ?? "");
-        //     }
-        // });
-
         // Extract market cap from the summary table
         const summaryTable = document.querySelector('[data-testid="quote-statistics"]') ||
             document.querySelector('div[data-testid="quote-summary"]');
@@ -198,7 +187,6 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.PriceToFreeCashFlowPerShare, fullText);
         }
 
-        // revenue growth YoY
         // ----- ROIC
         const roicElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Return on capital');
         if (roicElement) {
@@ -208,10 +196,8 @@ export default class YahooScraperHelper {
         }
 
         // free cash flow
-        // price to free cash flow per share
         // EPS 1Yr growth
         // return on assets
-        // return on capital
         // institutional ownership
     }
 
@@ -255,18 +241,6 @@ export default class YahooScraperHelper {
         });
     }
 
-    // private scrapeYahooSummaryPage(): void {
-    //     console.log('Scraping Yahoo summary page...');
-    //
-    //     // extract the stock name from the URL
-    //
-    //     const urlMatch = window.location.href.match(/\/quote\/([^\/\?]+)/);
-    //     const symbol = urlMatch ? urlMatch[1] : '';
-    //
-    //     // get name
-    //     // .top > div.hdr > div.left > section.container > h1
-    // }
-
     private static scrapeFinancialsPage(rawSymbolData: RawSymbolData): void {
         // Look for financial data tables
         const tables = document.querySelectorAll('table');
@@ -304,30 +278,5 @@ export default class YahooScraperHelper {
                 }
             });
         });
-
-        // Also check for any fin-streamer elements with financial data
-        // const finStreamers = document.querySelectorAll('fin-streamer');
-        // finStreamers.forEach(streamer => {
-        //     const field = streamer.getAttribute('data-field');
-        //     if (field && field.includes('revenue')) {
-        //         data.revenue = data.revenue || streamer.textContent.trim();
-        //     }
-        // });
-    }
-
-    // Utility method to safely extract text content
-    private safeTextContent(element: HTMLElement): string | undefined {
-        return element ? element.textContent?.trim() : '';
-    }
-
-    // Utility method to find the element by text content
-    private findElementByText(selector: string, text: string): Element | null {
-        const elements = document.querySelectorAll(selector);
-        for (let element of elements) {
-            if (element.textContent?.toLowerCase().includes(text.toLowerCase())) {
-                return element;
-            }
-        }
-        return null;
     }
 }
