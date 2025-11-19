@@ -55,6 +55,10 @@ export default class ColourHelper {
                 if (value < 18.0) return colours[Colour.Green];
                 if (value < 24.0) return colours[Colour.Yellow];
                 return colours[Colour.Red];
+            case SymbolField.Roic:
+                if (value < 6.0) return colours[Colour.Red];
+                if (value < 10.0) return colours[Colour.Yellow];
+                return colours[Colour.Green];
             case SymbolField.MarketCap:
                 if (value < 100000000) return colours[Colour.Yellow];
                 break;

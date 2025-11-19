@@ -62,6 +62,9 @@ export const processors: Processor = {
     [SymbolField.PriceToFreeCashFlowPerShare]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberField(SymbolField.PriceToFreeCashFlowPerShare, rawSymbolData);
     },
+    [SymbolField.Roic]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberPercentageField(SymbolField.Roic, rawSymbolData);
+    },
     [SymbolField.MarketCap]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.MarketCap;
 

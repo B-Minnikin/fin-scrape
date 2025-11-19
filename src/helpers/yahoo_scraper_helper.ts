@@ -192,6 +192,14 @@ export default class YahooScraperHelper {
         }
 
         // revenue growth YoY
+        // ----- ROIC
+        const roicElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Return on capital');
+        if (roicElement) {
+            const innerElem = roicElement?.children[1] as HTMLTableCellElement;
+            const fullText = innerElem.innerText?.trim();
+            symbolData.addSymbol(SymbolField.Roic, fullText);
+        }
+
         // free cash flow
         // price to free cash flow per share
         // EPS 1Yr growth
