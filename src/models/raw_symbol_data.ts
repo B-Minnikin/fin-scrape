@@ -20,6 +20,7 @@ export enum SymbolField {
     Date,
     Peg,
     Pegr,
+    FreeCashFlow,
     PriceToFreeCashFlowPerShare,
     EvToEbitda,
     TotalCash,
@@ -30,6 +31,7 @@ export enum SymbolField {
     Beta,
     RevenueGrowth,
     PriceToBook,
+    InstitutionalOwnership,
 }
 
 export const requiredFields: SymbolField[] = [
