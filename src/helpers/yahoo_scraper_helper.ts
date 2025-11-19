@@ -89,14 +89,14 @@ export default class YahooScraperHelper {
         }
 
         // ----- Profit Margin
-        const profitMarginElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Profit margin')
+        const profitMarginElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Profit margin');
         if (profitMarginElement) {
             const fullText = profitMarginElement?.children[1]?.textContent?.trim();
             symbolData.addSymbol(SymbolField.ProfitMargin, fullText);
         }
 
         // ----- Debt to Equity
-        const debtToEquityElement = li.find(p => p.firstElementChild?.textContent?.trim().startsWith('Total debt/equity'))
+        const debtToEquityElement = li.find(p => p.firstElementChild?.textContent?.trim().startsWith('Total debt/equity'));
         if (debtToEquityElement) {
             const fullText = debtToEquityElement?.children[1]?.textContent?.trim();
             symbolData.addSymbol(SymbolField.DebtToEquity, fullText);
@@ -181,8 +181,15 @@ export default class YahooScraperHelper {
     private static scrapeComparisonPage(symbolData: RawSymbolData): void {
         console.log('Scraping comparison page...');
 
-        // TODO - complete
-        // test when multiple comparisons present
+        const tr = [...document.querySelectorAll('tr')];
+
+        // ----- Price to Free Cash Flow per Share
+        const pFcfPSElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Price to free cash flow per share');
+        if (pFcfPSElement) {
+            const innerElem = pFcfPSElement?.children[1] as HTMLTableCellElement;
+            const fullText = innerElem.innerText?.trim();
+            symbolData.addSymbol(SymbolField.PriceToFreeCashFlowPerShare, fullText);
+        }
 
         // revenue growth YoY
         // free cash flow

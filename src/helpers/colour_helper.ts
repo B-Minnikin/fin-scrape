@@ -51,6 +51,10 @@ export default class ColourHelper {
                 if (value < comparisonValue) return colours[Colour.Green];
                 if (value >= comparisonValue) return colours[Colour.Yellow];
                 break;
+            case SymbolField.PriceToFreeCashFlowPerShare:
+                if (value < 18.0) return colours[Colour.Green];
+                if (value < 24.0) return colours[Colour.Yellow];
+                return colours[Colour.Red];
             case SymbolField.MarketCap:
                 if (value < 100000000) return colours[Colour.Yellow];
                 break;
