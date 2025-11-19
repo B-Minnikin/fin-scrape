@@ -203,6 +203,14 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.RevenueGrowth, fullText);
         }
 
+        // ----- Institutional Ownership
+        const institutionalOwnershipElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Institutional ownership %');
+        if (institutionalOwnershipElement) {
+            const innerElem = institutionalOwnershipElement?.children[1]?.children[1]?.firstElementChild as HTMLTableCellElement;
+            const fullText = innerElem.innerText?.trim();
+            symbolData.addSymbol(SymbolField.InstitutionalOwnership, fullText);
+        }
+
         // free cash flow
         // EPS 1Yr growth
         // return on assets

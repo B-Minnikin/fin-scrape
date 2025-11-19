@@ -71,6 +71,9 @@ export const processors: Processor = {
     [SymbolField.RevenueGrowth]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberPercentageField(SymbolField.RevenueGrowth, rawSymbolData);
     },
+    [SymbolField.InstitutionalOwnership]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberPercentageField(SymbolField.InstitutionalOwnership, rawSymbolData);
+    },
     [SymbolField.MarketCap]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.MarketCap;
 
