@@ -24,13 +24,6 @@ export default class YahooScraperHelper {
     private static scrapeSummaryPage(symbolData: RawSymbolData): void {
         console.log('Scraping summary page...');
 
-        // P/E - forward
-        // profit margin
-        // debt to equity
-        // PEG ratio
-        // EV/EBITDA
-        // dividends
-
         const li = [...document.querySelectorAll('li')];
 
         // ----- Symbol
@@ -201,6 +194,14 @@ export default class YahooScraperHelper {
             const innerElem = revenueGrowthElement?.children[1]?.children[1]?.firstElementChild as HTMLTableCellElement;
             const fullText = innerElem.innerText?.trim();
             symbolData.addSymbol(SymbolField.RevenueGrowth, fullText);
+        }
+
+        // ----- Free Cash Flow
+        const freeCashFlowElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Free cash flow');
+        if (freeCashFlowElement) {
+            const innerElem = freeCashFlowElement?.children[1]?.children[1]?.firstElementChild as HTMLTableCellElement;
+            const fullText = innerElem.innerText?.trim();
+            symbolData.addSymbol(SymbolField.FreeCashFlow, fullText);
         }
 
         // ----- Institutional Ownership

@@ -90,6 +90,22 @@ export const processors: Processor = {
             colour: ColourHelper.getColour(thisField, numberValue),
         };
     },
+    [SymbolField.FreeCashFlow]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        const thisField: SymbolField = SymbolField.FreeCashFlow;
+
+        const dataRow = rawSymbolData.findSymbol(thisField);
+        if (!dataRow) return null;
+
+        const numberValue: number | null = ConversionHelper.toFloatFromShorthand(dataRow.scrapedValue);
+
+        return {
+            name: thisField,
+            scrapedValue: dataRow.scrapedValue,
+            displayValue: dataRow.scrapedValue,
+            underlyingValue: numberValue,
+            colour: ColourHelper.getColour(thisField, numberValue),
+        };
+    },
     [SymbolField.EnterpriseValue]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.EnterpriseValue;
 
