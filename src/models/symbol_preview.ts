@@ -8,11 +8,11 @@ export interface PreviewRow {
 export default class SymbolPreview {
     private _previews: PreviewRow[] = [];
 
-    public get previews(): PreviewRow[] {
+    public getPreviews(): PreviewRow[] {
         return this._previews;
     }
 
-    public set previews(row: PreviewRow | null) {
+    public addRow(row: PreviewRow | null) {
         if (!row) {
             console.warn(`Null preview row`);
             return;

@@ -1,11 +1,7 @@
-import { BackgroundRequest, ContentAction, ScrapeResponse } from '../models/actions';
-import SymbolPreview, { PreviewRow } from '../models/symbol_preview';
+import { BackgroundRequest, ContentAction, ScrapeRequest, ScrapeResponse } from '../models/actions';
+import SymbolPreview from '../models/symbol_preview';
 
 class PopupManager {
-    preview: SymbolPreview;
-    // pageTypes: Array<string>;
-    // pageDisplayNames: Array<string>;
-
     constructor() {
         console.log('Popup initialized');
         // this.pageTypes = ['summary', 'statistics', 'financials'];
@@ -17,10 +13,8 @@ class PopupManager {
         this.preview = new SymbolPreview();
     }
 
-    // TODO - send request to background
-    // TODO - set icon based on current page (in background I think)
+    initializeUI(preview: SymbolPreview | undefined): void {
 
-    initializeUI(): void {
         // Set the main scrape button
         const scrapeButton = document.getElementById('scrape-page-option');
         if (!scrapeButton) {
@@ -39,6 +33,8 @@ class PopupManager {
             return;
         }
 
+        this.updatePreview(preview);
+
         resetButton.addEventListener('click', async (): Promise<void> => {
             await this.resetProgress();
         });
@@ -47,51 +43,55 @@ class PopupManager {
     async scrapePage(): Promise<void> {
         console.log('Scraping page (popup.js)...');
 
-        const response: ScrapeResponse = await browser.runtime.sendMessage({
+        let response: ScrapeResponse = await browser.runtime.sendMessage({
             action: ContentAction.ScrapeContentPage,
         } as BackgroundRequest);
 
-        console.log(response);
+        const newResponse = {} as ScrapeResponse;
+        Object.assign(newResponse, response);
 
-        if (response?.success) {
+        if (newResponse?.success) {
             console.log("good response");
 
-            const preview = response?.preview;
-            if (preview) {
-                this.preview = preview;
-                this.updatePreview();
-            }
+            const newPreview = new SymbolPreview();
+            Object.assign(newPreview, newResponse?.preview);
 
-            window.close(); // TODO - keep open for preview?
+            this.updatePreview(newPreview);
         }
-
-        // await this.updateStatusDisplay(response);
     } catch (error: Error) {
         console.error('Error scraping page:', error);
     }
 
-    private updatePreview(): void {
+    private updatePreview(preview: SymbolPreview | undefined): void {
+        console.log('update preview');
+        if (!preview) return;
+
         const previewPanelElement = document.getElementById('preview-panel');
         if (!previewPanelElement) {
             console.error(`Failed to find preview panel`);
             return;
         }
+        previewPanelElement.innerHTML = '';
 
-        const previewTemplate = document.getElementById('preview-template');
+        const previewTemplate: HTMLTemplateElement = document.getElementById('preview-template') as HTMLTemplateElement;
         if (!previewTemplate) {
             console.error(`Failed to find preview template`);
             return;
         }
 
-        for (const preview of this.preview.previews) {
-            const clone = previewTemplate.cloneNode(true);
+        for (const previewRow of preview.getPreviews()) {
+            const clone = previewTemplate.content.firstElementChild?.cloneNode(true);
+            if (!clone) {
+                continue;
+            }
+
             const mainElem = clone.parentElement?.querySelector('div.preview');
             const p = clone.parentElement?.querySelector('p');
 
-            mainElem?.classList.add(preview?.done ? 'is-complete' : 'is-not-complete')
+            mainElem?.classList.add(previewRow?.done ? 'is-complete' : 'is-not-complete')
 
             if (p) {
-                p.innerText = preview.abbreviation || '';
+                p.innerText = previewRow.abbreviation || '';
             }
 
             previewPanelElement.appendChild(clone);
@@ -208,9 +208,15 @@ class PopupManager {
 }
 
 // Initialise the popup when DOM is loaded
-(async () => {
+(async (): Promise<void> => {
+    const previewResponse: ScrapeResponse = await browser.runtime.sendMessage({
+        action: ContentAction.SendPreview
+    } as ScrapeRequest);
+    const newPreview = new SymbolPreview();
+    Object.assign(newPreview, previewResponse.preview);
+
     const popupManager = new PopupManager();
-    popupManager.initializeUI();
+    popupManager.initializeUI(newPreview);
 
     // await popupManager.loadStatus();
 })();

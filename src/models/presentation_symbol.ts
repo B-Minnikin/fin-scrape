@@ -1,5 +1,5 @@
 import { DataRow, RawSymbolData, requiredFields, SymbolField } from './raw_symbol_data';
-import { processorIterator, processors } from './symbol_processors';
+import { processors } from './symbol_processors';
 import SymbolPreview from './symbol_preview';
 
 type ProcessedSymbolMap = Map<SymbolField, DataRow>;
@@ -50,11 +50,11 @@ export class PresentationSymbol {
         for (const requiredField of requiredFields) {
             const isFound = this._rawSymbolData?.findSymbol(requiredField);
 
-            preview.previews = {
+            preview.addRow({
                 done: isFound != null,
                 tooltip: 'ba',
                 abbreviation: 'aa'
-            };
+            });
         }
 
         return preview;

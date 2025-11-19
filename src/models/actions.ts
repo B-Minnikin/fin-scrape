@@ -8,6 +8,7 @@ export enum ContentAction {
     GetScrapeStatus,
     ResetScrape,
     CopyToClipboard,
+    SendPreview,
 }
 
 export interface ScrapeRequest {

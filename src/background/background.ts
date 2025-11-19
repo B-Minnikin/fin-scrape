@@ -3,18 +3,22 @@ import { RawSymbolData } from '../models/raw_symbol_data';
 import { BackgroundRequest, ContentAction, ScrapeRequest, ScrapeResponse, ScrapeStatus } from '../models/actions';
 import UrlHelper from '../helpers/url_helper';
 import IconHelper from '../helpers/icon_helper';
+import { PresentationSymbol } from '../models/presentation_symbol';
 import MessageSender = browser.runtime.MessageSender;
 import Tab = browser.tabs.Tab;
 import { PresentationSymbol } from '../models/presentation_symbol';
+import SymbolPreview from '../models/symbol_preview';
 
 class ScrapingManager {
     rawSymbolData: RawSymbolData;
     presentationSymbol: PresentationSymbol; // TODO - needed or transient?
+    preview: SymbolPreview;
     currentPageType: PageType = PageType.Unknown;
     isComplete: boolean = false;
 
     constructor() {
         console.log('Scraping manager initialized');
+        this.preview = new SymbolPreview();
         this.rawSymbolData = new RawSymbolData();
         this.presentationSymbol = new PresentationSymbol(this.rawSymbolData);
     }
@@ -45,11 +49,10 @@ class ScrapingManager {
         // });
 
         // Handle messages from content scripts
-        browser.runtime.onMessage.addListener(async (request, sender: MessageSender, sendResponse): Promise<boolean> => {
+        browser.runtime.onMessage.addListener(async (request, sender: MessageSender): Promise<void> => {
             console.log('background onMessage');
             console.log(request);
-            await this.handleMessage(request, sender, sendResponse);
-            return true; // Keep the message channel open for async response
+            return await this.handleMessage(request, sender);
         });
     }
 
@@ -100,22 +103,25 @@ class ScrapingManager {
         }
     }
 
-    async handleMessage(request: BackgroundRequest, sender: MessageSender, sendResponse: any): Promise<boolean> {
+    async handleMessage(request: BackgroundRequest, sender: MessageSender): Promise<any> {
         console.log(`Background message action: ${request.action}`);
 
         switch (request.action) {
+            case ContentAction.SendPreview:
+                return {
+                    success: true,
+                    preview: this.preview,
+                }
             case ContentAction.ScrapingComplete:
                 if (!sender.tab) {
                     console.error("Sender tab is undefined");
-                    sendResponse({ success: false });
-                    return false;
+                    return { success: false };
                 }
 
                 await this.handleScrapingComplete(request.pageType, request.data, sender.tab);
-                sendResponse({
+                return {
                     success: true
-                } as ScrapeResponse);
-                break;
+                } as ScrapeResponse;
 
             case ContentAction.ScrapeContentPage:
                 console.log('Scraping page (background.js)...');
@@ -124,7 +130,7 @@ class ScrapingManager {
 
                 if (!tab?.id) {
                     console.error("Invalid tab ID when scraping page");
-                    return false;
+                    return { success: false }
                 }
 
                 try {
@@ -140,38 +146,39 @@ class ScrapingManager {
 
                     if (contentResponse?.success) {
                         this.presentationSymbol.updateSymbolData(RawSymbolData.fromPlainObject(contentResponse.rawSymbolData));
+                        this.preview = this.presentationSymbol.generatePreview();
 
-                        sendResponse({
+                        return {
                             success: true,
-                            preview: this.presentationSymbol.generatePreview()
-                        } as ScrapeResponse);
+                            preview: this.preview,
+                        } as ScrapeResponse;
                     } else {
                         console.error("Failed to scrape content");
-                        sendResponse({ success: false } as ScrapeResponse);
+                        return { success: false } as ScrapeResponse;
                     }
                 } catch (err) {
                     console.error(err);
-                    sendResponse({ success: false } as ScrapeResponse);
+                    return { success: false } as ScrapeResponse;
                 }
-                break;
 
             case ContentAction.GetScrapeStatus:
-                sendResponse({
+                return {
                     currentPageType: this.currentPageType,
                     scrapedData: this.rawSymbolData,
                     isComplete: this.isComplete
-                } as ScrapeStatus);
+                } as ScrapeStatus;
+
+            case ContentAction.CopyToClipboard:
+                const preparedRows = this.presentationSymbol.getPreparedDataRows();
+                await ClipboardHelper.exportToClipboard(preparedRows);
                 break;
 
             case ContentAction.ResetScrape:
                 this.resetScraping();
-                sendResponse({
+                return {
                     success: true
-                } as ScrapeResponse);
-                break;
+                } as ScrapeResponse;
         }
-
-        return true;
     }
 
     async handleScrapingComplete(pageType: PageType | undefined, data: any, tab: browser.tabs.Tab): Promise<void> {
@@ -182,6 +189,7 @@ class ScrapingManager {
     resetScraping(): void {
         this.rawSymbolData = new RawSymbolData();
         this.currentPageType = PageType.Unknown;
+        this.preview = new SymbolPreview();
         this.isComplete = false;
     }
 }
