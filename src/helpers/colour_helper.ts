@@ -44,6 +44,9 @@ export default class ColourHelper {
                 if (value > 50.0) return colours[Colour.Yellow];
                 if (value >= 0.0) return colours[Colour.Green];
                 break;
+            case SymbolField.RevenueGrowth:
+                if (value < 0.0) return colours[Colour.Red];
+                return null;
             case SymbolField.EnterpriseValue:
                 if (!comparisonValue) return null;
 

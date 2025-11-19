@@ -195,6 +195,14 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.Roic, fullText);
         }
 
+        // ----- Revenue Growth YoY
+        const revenueGrowthElement = tr.find(p => p.firstElementChild?.textContent?.trim() === 'Revenue growth YoY');
+        if (revenueGrowthElement) {
+            const innerElem = revenueGrowthElement?.children[1]?.children[1]?.firstElementChild as HTMLTableCellElement;
+            const fullText = innerElem.innerText?.trim();
+            symbolData.addSymbol(SymbolField.RevenueGrowth, fullText);
+        }
+
         // free cash flow
         // EPS 1Yr growth
         // return on assets
