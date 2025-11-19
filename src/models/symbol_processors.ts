@@ -65,6 +65,9 @@ export const processors: Processor = {
     [SymbolField.Roic]: (rawSymbolData: RawSymbolData): DataRow | null => {
         return basicNumberPercentageField(SymbolField.Roic, rawSymbolData);
     },
+    [SymbolField.EvToEbitda]: (rawSymbolData: RawSymbolData): DataRow | null => {
+        return basicNumberField(SymbolField.EvToEbitda, rawSymbolData);
+    },
     [SymbolField.MarketCap]: (rawSymbolData: RawSymbolData): DataRow | null => {
         const thisField: SymbolField = SymbolField.MarketCap;
 

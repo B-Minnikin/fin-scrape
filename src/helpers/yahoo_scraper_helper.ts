@@ -102,6 +102,13 @@ export default class YahooScraperHelper {
             symbolData.addSymbol(SymbolField.DebtToEquity, fullText);
         }
 
+        // ----- EV/EBITDA
+        const evToEbitdaElement = li.find(p => p.firstElementChild?.textContent?.trim() === 'Enterprise value/EBITDA');
+        if (debtToEquityElement) {
+            const fullText = debtToEquityElement?.children[1]?.textContent?.trim();
+            symbolData.addSymbol(SymbolField.EvToEbitda, fullText);
+        }
+
         // ----- Dividend
         const dividendElement = document.querySelector('span[title="Forward dividend & yield"] + span');
         if (dividendElement) {
